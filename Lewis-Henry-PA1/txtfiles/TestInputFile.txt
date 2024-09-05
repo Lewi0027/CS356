@@ -4,12 +4,10 @@ abcdefghijklmnopqrstuvwxyz
 0123456789
 !@#$%^&*()_+-={}[]|\:;"'<>,.?/~`
 This line has spaces.
-This	line	has	tabs.
-repeatedrepeatedrepeated
+    This	line	has	tabs.
 AAAAAAAAAABBBBBBBBBBCCCCCCCCCC
-こんにちは世界 (Hello World in Japanese)
-😀🌍🚀 (Emoji: grinning face, earth globe, rocket)
-Long Line
+こんにちは世界
+😀🌍🚀
 This is a very long line of text that goes on and on without any line breaks to test how your encryption handles lengthy sequences of characters in a single line which might be encountered in real-world scenarios like base64 encoded data or long paragraphs without proper formatting.
 
 

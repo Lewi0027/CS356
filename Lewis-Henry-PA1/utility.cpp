@@ -57,4 +57,5 @@ std::string FileToString(const std::string& inputFilePath, bool isKey) {
 void StartCipher(std::string cipherType, std::string inputFile, std::string outputFileAddress, std::string keyFile) {
 
     if (cipherType == "S") Stream(inputFile, keyFile, outputFileAddress);
+    // else Block(inputFile, keyFile, outputFileAddress);
 }
