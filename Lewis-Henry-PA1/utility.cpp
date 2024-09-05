@@ -40,22 +40,23 @@ void ValidateModeOfOperation(const std::string& operationMode) {
 //Function that reads file to string and returns it
 //If no file present exit(1)
 std::string FileToString(const std::string& inputFilePath, bool isKey) {
-    std::ifstream inputFile(inputFilePath);
-    std::stringstream buffer;
+    std::ifstream inputFile(inputFilePath, std::ios::binary);
+    std::string content;
 
     if (!inputFile) {
         std::cerr << (isKey ? "Key File Does Not Exist\n" :  "Input File Does Not Exist\n");
         exit(1);
     }
-    buffer << inputFile.rdbuf();
+    
+    content.assign((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
 
-    // std::cout << buffer.str() << "\n";
+    std::cout << content << "\n";
 
-    return buffer.str();
+    return content;
 }
 
-void StartCipher(std::string cipherType, std::string inputFile, std::string outputFileAddress, std::string keyFile) {
+void StartCipher(const std::string& cipherType, const std::string& inputFile, const std::string& outputFileAddress, const std::string& keyFile, const std::string& operationMode) {
 
-    if (cipherType == "S") Stream(inputFile, keyFile, outputFileAddress);
+    if (cipherType == "S") Stream(inputFile, outputFileAddress, keyFile);
     // else Block(inputFile, keyFile, outputFileAddress);
 }

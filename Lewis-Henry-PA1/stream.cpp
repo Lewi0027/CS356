@@ -3,11 +3,10 @@
 #include <iostream>
 #include <fstream>
 
-
-Stream::Stream(const std::string& inputFile, const std::string& keyFile, const std::string& outputFileLocation) {
+Stream::Stream(const std::string& inputFile, const std::string& outputFileLocation, const std::string& keyFile) {
     std::string inputContent = FileToString(inputFile, false);
     std::string keyContent = FileToString(keyFile, true);
-    
+
     std::string outputString = StreamXOR(inputContent, keyContent);
 
     CreateOutputFile(outputFileLocation, outputString);
@@ -26,7 +25,7 @@ std::string Stream::StreamXOR(const std::string& input, const std::string& key) 
 };
 
 void Stream::CreateOutputFile(const std::string& outputFileLocation, const std::string& output) {
-    std::ofstream outputFile(outputFileLocation);
+    std::ofstream outputFile(outputFileLocation, std::ios::binary);
 
     if (outputFile.is_open()) {
         outputFile << output;

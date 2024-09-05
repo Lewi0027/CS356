@@ -11,9 +11,9 @@ int main(int argc, char *argv[]) {
     //Validate command line arguments
     ValidateAll(argc, argv[1], argv[2], argv[3], argv[4], argv[5]);
 
-    StartCipher(argv[1], argv[2], argv[3], argv[4]);
+    StartCipher(argv[1], argv[2], argv[3], argv[4], argv[5]);
     
-    // std::cout << "You made it to the end!\n";
+    std::cout << "You made it to the end!\n";
 
     return 0;
 }

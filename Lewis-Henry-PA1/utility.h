@@ -13,6 +13,6 @@ void ValidateModeOfOperation(const std::string&);
 std::string FileToString(const std::string&, bool);
 
 //Ciphers
-void StartCipher(std::string, std::string, std::string, std::string);
+void StartCipher(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
 
 #endif // UTILITY_H
