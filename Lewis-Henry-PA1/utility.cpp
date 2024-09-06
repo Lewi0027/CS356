@@ -38,8 +38,8 @@ void ValidateModeOfOperation(const std::string& operationMode) {
         exit(1);
     }
 }
-//Function that reads file to string and returns it
-//If no file present exit(1)
+// Function that reads file to string and returns it
+// If no file present exit(1)
 std::string FileToString(const std::string& inputFilePath, bool isKey) {
     std::ifstream inputFile(inputFilePath, std::ios::binary);
     std::string content;
@@ -56,6 +56,7 @@ std::string FileToString(const std::string& inputFilePath, bool isKey) {
     return content;
 }
 
+// Function that creates output file and populates it with content from provided string.
 void CreateOutputFile(const std::string& outputFileLocation, const std::string& output) {
     std::ofstream outputFile(outputFileLocation, std::ios::binary);
 
@@ -66,6 +67,7 @@ void CreateOutputFile(const std::string& outputFileLocation, const std::string& 
 
 }
 
+// Function that XORs two files together, looping through the key repeatedly
 std::string XOR(const std::string& input, const std::string& key) {
     std::string returnString = input;  
     size_t keySize = key.size();
@@ -78,12 +80,14 @@ std::string XOR(const std::string& input, const std::string& key) {
     return returnString;
 }
 
+// Function that removes unwanted characters from end of string
 void AdjustStringLength(std::string& inputString, size_t length) {
     while (inputString.size() > length) {
         inputString.pop_back();
     }
 } 
 
+// Function that selects the requested encryption/decryption method
 void StartCipher(const std::string& cipherType, const std::string& inputFile, const std::string& outputFileAddress, const std::string& keyFile, const std::string& operationMode) {
 
     if (cipherType == "S") Stream(inputFile, outputFileAddress, keyFile);

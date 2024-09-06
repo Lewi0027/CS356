@@ -36,14 +36,6 @@ std::string Block::PadString(const std::string& inputContent) {
     return returnString;
 };
 
-// void Block::RemoveEOFByte(std::string& outputString) {
-//     if (!outputString.empty()) {
-//         if (static_cast<unsigned char>(outputString.back()) == 0xCA) {
-//             outputString.pop_back();
-//         }
-//     }
-// }
-
 std::string Block::ByteSwapForward(const std::string& inputContent) {
     std::string returnString = inputContent;
 
