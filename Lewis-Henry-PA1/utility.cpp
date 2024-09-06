@@ -1,5 +1,6 @@
 #include "utility.h"
 #include "stream.h"
+#include "block.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -55,8 +56,36 @@ std::string FileToString(const std::string& inputFilePath, bool isKey) {
     return content;
 }
 
+void CreateOutputFile(const std::string& outputFileLocation, const std::string& output) {
+    std::ofstream outputFile(outputFileLocation, std::ios::binary);
+
+    if (outputFile.is_open()) {
+        outputFile.write(output.c_str(), output.size());
+        outputFile.close();
+    }
+
+}
+
+std::string XOR(const std::string& input, const std::string& key) {
+    std::string returnString = input;  
+    size_t keySize = key.size();
+    size_t inputSize = input.size();
+
+    for (unsigned int i = 0; i < inputSize; i++) {
+        returnString[i] ^= (key[i % keySize]);
+    };
+
+    return returnString;
+}
+
+void AdjustStringLength(std::string& inputString, size_t length) {
+    while (inputString.size() > length) {
+        inputString.pop_back();
+    }
+} 
+
 void StartCipher(const std::string& cipherType, const std::string& inputFile, const std::string& outputFileAddress, const std::string& keyFile, const std::string& operationMode) {
 
     if (cipherType == "S") Stream(inputFile, outputFileAddress, keyFile);
-    // else Block(inputFile, keyFile, outputFileAddress);
+    else Block(inputFile, outputFileAddress, keyFile, operationMode);
 }

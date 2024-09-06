@@ -25,5 +25,5 @@ utility.o: utility.cpp utility.h
 
 
 clean:
-	rm -f $(OBJS) $(EXEC) cipher.exe
+	rm -f $(OBJS) $(EXEC) cipher.exe txtfiles/output1.txt txtfiles/output2.txt
 

@@ -9,8 +9,13 @@ void ValidateArgumentCount(const int);
 void ValidateCipherType(const std::string&);
 void ValidateModeOfOperation(const std::string&);
 
-//Read file
+//Read & output file
 std::string FileToString(const std::string&, bool);
+void CreateOutputFile(const std::string&, const std::string&);
+
+//XOR function & adjust string length
+std::string XOR(const std::string&, const std::string&);
+void AdjustStringLength(std::string&, size_t);
 
 //Ciphers
 void StartCipher(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
