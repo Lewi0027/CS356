@@ -3,7 +3,6 @@
 #include "block.h"
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
 
 void ValidateAll(const int argumentCount, const std::string& cipherType, const std::string& inputFilePath, const std::string& outputFilePath, const std::string& keyFilePath, const std::string& operationMode) {
