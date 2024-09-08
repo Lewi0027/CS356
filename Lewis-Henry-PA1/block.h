@@ -11,15 +11,16 @@ class Block {
 
     // PAD & BLOCK FUNCTIONS
     std::string PadString(const std::string&);
-    std::vector<std::vector<uint8_t>> CreateBlocks(const std::string&);
-    std::string BlockToString(const std::vector<std::vector<uint8_t>>&, size_t);
+    void RemovePadding(std::string&);
+    std::vector<std::vector<char>> CreateBlocks(const std::string&);
+    std::string BlockToString(const std::vector<std::vector<char>>&);
 
     // ALGORITHM FUNCTIONS
-    std::vector<uint8_t> BlockSwapForward(const std::vector<uint8_t>&);
-    std::vector<uint8_t> BlockSwapReverse(const std::vector<uint8_t>&);
+    std::vector<char> BlockSwapAlgorithm(std::vector<char>&, const std::string&);
+    void SwapIndices(std::vector<char>&, int, int);
 
     // HELPER PRINT FUNCTIONS
-    void PrintBlocks(const std::vector<std::vector<uint8_t>>&);
+    void PrintBlocks(const std::vector<std::vector<char>>&);
     void PrintString(const std::string&);
 };
 

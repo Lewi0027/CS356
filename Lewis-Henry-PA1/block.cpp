@@ -5,36 +5,57 @@
 Block::Block(const std::string& inputFile, const std::string& outputFileLocation, const std::string& keyFile, const std::string& operationMode) {
     // Create strings out of input file and key file
     std::string inputContent = FileToString(inputFile, false);
-    std::string keyContent = FileToString(keyFile, true);
-    size_t inputContentSize = inputContent.size();
+    const std::string keyContent = FileToString(keyFile, true);
+    // std::cout << "initial key size: " << keyContent.size() << std::endl;
 
-    // Pad input file string
-    inputContent = PadString(inputContent);
-    
-    // XOR strings together and trim as needed
-    std::string outputString = XOR(inputContent, keyContent);
-    AdjustStringLength(outputString, inputContentSize);
+    if (operationMode == "E") {
+        size_t inputContentSize = inputContent.size();
+        
+        // Pad input file string
+        inputContent = PadString(inputContent);
+        
+        // XOR strings together and trim as needed
+        std::string outputString = XOR(inputContent, keyContent);
+        AdjustStringLength(outputString, inputContentSize);
 
-    // Create blocks out of string
-    std::vector<std::vector<uint8_t>> inputBlocks = CreateBlocks(outputString);
-    // PrintBlocks(inputBlocks);
+        // Create blocks out of string
+        std::vector<std::vector<char>> inputBlocks = CreateBlocks(outputString);
 
-    // if (operationMode == "E") {
-    //     for (size_t i = 0; i < inputBlocks.size(); i++) {
-    //         BlockSwapForward(inputBlocks[i]);
-    //     }
-    // }
-    // else {
-    //     for (size_t i = 0; i < inputBlocks.size(); i++) {
-    //         BlockSwapReverse(inputBlocks[i]);
-    //     }
-    // }
+        // Swap algorithm
+        for (size_t i = 0; i < inputBlocks.size(); i++) {
+            BlockSwapAlgorithm(inputBlocks[i], keyContent);
+        }
 
-    // Turn blocks back into string
-    outputString = BlockToString(inputBlocks, inputContentSize);
+        // Turn blocks back into string
+        outputString = BlockToString(inputBlocks);
+        PrintResults(outputString);
 
-    // Create output file and copy string to file
-    CreateOutputFile(outputFileLocation, outputString);
+        // Create output file and copy string to file
+        CreateOutputFile(outputFileLocation, outputString);
+    }
+    else {
+        std::vector<std::vector<char>> inputBlocks = CreateBlocks(inputContent);
+        
+        // Swap algorithm
+        for (size_t i = 0; i < inputBlocks.size(); i++) {
+            BlockSwapAlgorithm(inputBlocks[i], keyContent);
+        }
+
+        // Turn blocks back into string
+        std::string outputString = BlockToString(inputBlocks);
+        PrintString(outputString);
+        std::cout << "String size: " << outputString.size() << std::endl;
+
+        // XOR strings together and trim as needed
+        outputString = XOR(outputString, keyContent);
+        PrintString(outputString);
+        RemovePadding(outputString);
+        outputString.pop_back();
+        PrintString(outputString);
+
+        // Create output file and copy string to file
+        CreateOutputFile(outputFileLocation, outputString);
+    }
 };
 
 // PAD & BLOCK FUNCTIONS
@@ -51,9 +72,16 @@ std::string Block::PadString(const std::string& inputContent) {
 
     return returnString;
 };
+// Remove padding as needed (to original string)
+void Block::RemovePadding(std::string& input) {
+    // Start from the end of the string and check for padding
+    while (!input.empty() && input.back() == '\x81') {
+        input.pop_back();
+    }
+}
 // Create vectors of 16 byte blocks
-std::vector<std::vector<uint8_t>> Block::CreateBlocks(const std::string& inputString) {
-    std::vector<std::vector<uint8_t>> returnVector;
+std::vector<std::vector<char>> Block::CreateBlocks(const std::string& inputString) {
+    std::vector<std::vector<char>> returnVector;
 
     size_t blockSize = 16;
     size_t inputStringSize = inputString.size();
@@ -66,28 +94,19 @@ std::vector<std::vector<uint8_t>> Block::CreateBlocks(const std::string& inputSt
     }
 
     for (size_t i = 0; i < inputStringSize; i++ ) {
-        returnVector[i / blockSize][ i % blockSize] = static_cast<uint8_t>(inputString[i]);
+        returnVector[i / blockSize][ i % blockSize] = inputString[i];
     }
 
     return returnVector;
 };
 // Convert block back to string
-std::string Block::BlockToString(const std::vector<std::vector<uint8_t>>& inputBlocks, size_t inputContentSize) {
+std::string Block::BlockToString(const std::vector<std::vector<char>>& inputBlocks) {
     std::string returnString;
 
     for (const auto& block : inputBlocks) {
-        for (uint8_t byte : block) {
+        for (char byte : block) {
             returnString += static_cast<char>(byte);
         }
-    }
-
-    size_t trimSize = returnString.size();
-
-    if (returnString.size() > inputContentSize) {
-        while (trimSize > inputContentSize && returnString[trimSize - 1] == '\x81') {
-            trimSize--;
-        }
-        returnString = returnString.substr(0, trimSize - 1);
     }
 
     return returnString;
@@ -95,30 +114,50 @@ std::string Block::BlockToString(const std::vector<std::vector<uint8_t>>& inputB
 
 // ALGORITHM FUNCTIONS
 // Encrypt swap
-std::vector<uint8_t> Block::BlockSwapForward(const std::vector<uint8_t>& inputBlock) {
+std::vector<char> Block::BlockSwapAlgorithm(std::vector<char>& inputBlock, const std::string& keyContent) {
+    int start = 0;
+    int end = static_cast<int>(inputBlock.size() - 1);
+
+    while (start < end) {
+        // Calculate modulo of ASCII
+        int modulo = keyContent[start] % 2;
+        if (modulo == 1) {
+            SwapIndices(inputBlock, start, end);
+            end--;
+        }
+        // Update pointer
+        start++;
+    }
 
     return inputBlock;
 };
-// Decrypt swap
-std::vector<uint8_t> Block::BlockSwapReverse(const std::vector<uint8_t>& inputBlock) {
-
-    return inputBlock;
+// Swaps values at indices provided
+void Block::SwapIndices(std::vector<char>& inputBlock, int start, int end) {
+    char newStartValue = inputBlock[end];
+    inputBlock[end] = inputBlock[start];
+    inputBlock[start] = newStartValue;
 };
 
 // HELPER PRINT FUNCTIONS
 // Print block
-void Block::PrintBlocks(const std::vector<std::vector<uint8_t>>& blocks) {
+void Block::PrintBlocks(const std::vector<std::vector<char>>& blocks) {
     int blockNumber = 0;
     
     for (const auto& block : blocks) {
         std::cout << "Block " << blockNumber++ << std::endl;
-        for (uint8_t byte : block) {
-            std::cout << static_cast<char>(byte);
+        if (block.size() != 16) {
+            std::cout << "Block only has " << block.size() << " elements" << std::endl;
+        }
+
+        // Print each byte in the block
+        for (size_t i = 0; i < block.size(); ++i) {
+            
+            std::cout << (block[i]);
         }
         std::cout << std::endl;
     }
 }
 // Print string
 void Block::PrintString(const std::string& string) {
-    std::cout << string;
+    std::cout << string << std::endl;
 };

@@ -2,6 +2,7 @@
 #define UTILITY_H
 
 #include <string>
+#include <iomanip>
 
 // MASTER
 void StartCipher(int, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
@@ -18,5 +19,6 @@ std::string FileToString(const std::string&, bool);
 void AdjustStringLength(std::string&, size_t);
 std::string XOR(const std::string&, const std::string&);
 void CreateOutputFile(const std::string&, const std::string&);
+void PrintResults(const std::string&);
 
 #endif // UTILITY_H

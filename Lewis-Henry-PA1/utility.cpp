@@ -75,13 +75,20 @@ void AdjustStringLength(std::string& inputString, size_t length) {
 } 
 // XORs two files together, looping through the key repeatedly
 std::string XOR(const std::string& input, const std::string& key) {
-    std::string returnString = input;  
+    std::string returnString = input;
     size_t keySize = key.size();
     size_t inputSize = input.size();
 
+    // Debugging information
+    std::cout << "returnString size: " << returnString.size() << std::endl;
+    std::cout << "key size: " << keySize << std::endl;
+    std::cout << "input size: " << inputSize << std::endl;
+
     for (unsigned int i = 0; i < inputSize; i++) {
-        returnString[i] ^= (key[i % keySize]);
-    };
+        returnString[i] ^= key[i % keySize];
+    }
+
+    PrintResults(returnString);
 
     return returnString;
 }
@@ -93,5 +100,12 @@ void CreateOutputFile(const std::string& outputFileLocation, const std::string& 
         outputFile.write(output.c_str(), output.size());
         outputFile.close();
     }
-
+}
+// Print result as hex
+void PrintResults(const std::string& returnString) {
+    std::cout << "returnString (hex): ";
+    for (unsigned char c : returnString) {
+        std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << ' ';
+    }
+    std::cout << std::dec << std::endl;
 }
