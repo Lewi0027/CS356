@@ -3,15 +3,19 @@
 #include <iostream>
 
 Block::Block(const std::string& inputFile, const std::string& outputFileLocation, const std::string& keyFile, const std::string& operationMode) {
+    // Create strings out of input file and key file
     std::string inputContent = FileToString(inputFile, false);
     std::string keyContent = FileToString(keyFile, true);
-
     size_t inputContentSize = inputContent.size();
-    inputContent = PadString(inputContent);
-    std::string outputString = XOR(inputContent, keyContent);
 
+    // Pad input file string
+    inputContent = PadString(inputContent);
+    
+    // XOR strings together and trim as needed
+    std::string outputString = XOR(inputContent, keyContent);
     AdjustStringLength(outputString, inputContentSize);
 
+    // Create blocks out of string
     std::vector<std::vector<uint8_t>> inputBlocks = CreateBlocks(outputString);
     // PrintBlocks(inputBlocks);
 
@@ -26,11 +30,15 @@ Block::Block(const std::string& inputFile, const std::string& outputFileLocation
     //     }
     // }
 
+    // Turn blocks back into string
     outputString = BlockToString(inputBlocks, inputContentSize);
 
+    // Create output file and copy string to file
     CreateOutputFile(outputFileLocation, outputString);
 };
 
+// PAD & BLOCK FUNCTIONS
+// Pad string as needed (to complete 16 bytes)
 std::string Block::PadString(const std::string& inputContent) {
     std::string returnString = inputContent;
     size_t blockSize = 16;
@@ -43,7 +51,7 @@ std::string Block::PadString(const std::string& inputContent) {
 
     return returnString;
 };
-
+// Create vectors of 16 byte blocks
 std::vector<std::vector<uint8_t>> Block::CreateBlocks(const std::string& inputString) {
     std::vector<std::vector<uint8_t>> returnVector;
 
@@ -63,7 +71,7 @@ std::vector<std::vector<uint8_t>> Block::CreateBlocks(const std::string& inputSt
 
     return returnVector;
 };
-
+// Convert block back to string
 std::string Block::BlockToString(const std::vector<std::vector<uint8_t>>& inputBlocks, size_t inputContentSize) {
     std::string returnString;
 
@@ -85,6 +93,20 @@ std::string Block::BlockToString(const std::vector<std::vector<uint8_t>>& inputB
     return returnString;
 };
 
+// ALGORITHM FUNCTIONS
+// Encrypt swap
+std::vector<uint8_t> Block::BlockSwapForward(const std::vector<uint8_t>& inputBlock) {
+
+    return inputBlock;
+};
+// Decrypt swap
+std::vector<uint8_t> Block::BlockSwapReverse(const std::vector<uint8_t>& inputBlock) {
+
+    return inputBlock;
+};
+
+// HELPER PRINT FUNCTIONS
+// Print block
 void Block::PrintBlocks(const std::vector<std::vector<uint8_t>>& blocks) {
     int blockNumber = 0;
     
@@ -96,17 +118,7 @@ void Block::PrintBlocks(const std::vector<std::vector<uint8_t>>& blocks) {
         std::cout << std::endl;
     }
 }
-
+// Print string
 void Block::PrintString(const std::string& string) {
     std::cout << string;
-};
-
-std::vector<uint8_t> Block::BlockSwapForward(const std::vector<uint8_t>& inputBlock) {
-
-    return inputBlock;
-};
-
-std::vector<uint8_t> Block::BlockSwapReverse(const std::vector<uint8_t>& inputBlock) {
-
-    return inputBlock;
 };

@@ -4,6 +4,7 @@
 
 class Stream {
     public:
+    // CONSTRUCTOR (Does everything)
     Stream(const std::string&, const std::string&, const std::string&);
 };
 
