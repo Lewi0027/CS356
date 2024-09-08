@@ -1,5 +1,7 @@
 #include "utility.h"
 #include "block.h"
+
+#include <iomanip>
 #include <iostream>
 
 Block::Block(const std::string& inputFile, const std::string& outputFileLocation, const std::string& keyFile, const std::string& operationMode) {
@@ -9,14 +11,34 @@ Block::Block(const std::string& inputFile, const std::string& outputFileLocation
     // std::cout << "initial key size: " << keyContent.size() << std::endl;
 
     if (operationMode == "E") {
-        size_t inputContentSize = inputContent.size();
-        
+        // Determine the fixed width for all labels
+        const int labelWidth = 22;
+
+        // Print inputContent
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "inputContent: ";
+        PrintResults(inputContent);
+
         // Pad input file string
         inputContent = PadString(inputContent);
-        
+
+        // Print inputContent w/ padding
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "inputContent w/ pad: ";
+        PrintResults(inputContent);
+
+        // Print keyContent
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "keyContent: ";
+        PrintResults(keyContent);
+
         // XOR strings together and trim as needed
         std::string outputString = XOR(inputContent, keyContent);
-        AdjustStringLength(outputString, inputContentSize);
+
+        // Print XOR results
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "XOR results: ";
+        PrintResults(outputString);
 
         // Create blocks out of string
         std::vector<std::vector<char>> inputBlocks = CreateBlocks(outputString);
@@ -28,12 +50,30 @@ Block::Block(const std::string& inputFile, const std::string& outputFileLocation
 
         // Turn blocks back into string
         outputString = BlockToString(inputBlocks);
+
+        // Print Block Swapped results
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "Block Swapped: ";
         PrintResults(outputString);
 
         // Create output file and copy string to file
         CreateOutputFile(outputFileLocation, outputString);
     }
     else {
+        // Determine the fixed width for all labels
+        const int labelWidth = 22;
+
+        // Print inputContent
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "inputContent: ";
+        PrintResults(inputContent);
+
+        // Print keyContent
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "keyContent: ";
+        PrintResults(keyContent);
+
+        // Create blocks out of input string
         std::vector<std::vector<char>> inputBlocks = CreateBlocks(inputContent);
         
         // Swap algorithm
@@ -43,15 +83,27 @@ Block::Block(const std::string& inputFile, const std::string& outputFileLocation
 
         // Turn blocks back into string
         std::string outputString = BlockToString(inputBlocks);
-        PrintString(outputString);
-        std::cout << "String size: " << outputString.size() << std::endl;
+        
+        // Print Block Swapped results
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "Block Swapped: ";
+        PrintResults(outputString);
 
         // XOR strings together and trim as needed
         outputString = XOR(outputString, keyContent);
-        PrintString(outputString);
+
+        // Print XOR results
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "XOR results: ";
+        PrintResults(outputString);
+        
+        // Remove padding from XOR results
         RemovePadding(outputString);
-        outputString.pop_back();
-        PrintString(outputString);
+
+        // Print outputString minus padding
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "output w/o pad: ";
+        PrintResults(outputString);
 
         // Create output file and copy string to file
         CreateOutputFile(outputFileLocation, outputString);

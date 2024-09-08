@@ -80,15 +80,15 @@ std::string XOR(const std::string& input, const std::string& key) {
     size_t inputSize = input.size();
 
     // Debugging information
-    std::cout << "returnString size: " << returnString.size() << std::endl;
-    std::cout << "key size: " << keySize << std::endl;
-    std::cout << "input size: " << inputSize << std::endl;
+    // std::cout << "returnString size: " << returnString.size() << std::endl;
+    // std::cout << "key size: " << keySize << std::endl;
+    // std::cout << "input size: " << inputSize << std::endl;
 
     for (unsigned int i = 0; i < inputSize; i++) {
         returnString[i] ^= key[i % keySize];
     }
 
-    PrintResults(returnString);
+    // PrintResults(returnString);
 
     return returnString;
 }
