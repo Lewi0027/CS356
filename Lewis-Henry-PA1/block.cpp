@@ -68,11 +68,6 @@ Block::Block(const std::string& inputFile, const std::string& outputFileLocation
         std::cout << std::setw(labelWidth) << std::left << "inputContent: ";
         PrintResults(inputContent);
 
-        // Print keyContent
-        std::cout << std::setfill(' ');
-        std::cout << std::setw(labelWidth) << std::left << "keyContent: ";
-        PrintResults(keyContent);
-
         // Create blocks out of input string
         std::vector<std::vector<char>> inputBlocks = CreateBlocks(inputContent);
         
@@ -88,6 +83,11 @@ Block::Block(const std::string& inputFile, const std::string& outputFileLocation
         std::cout << std::setfill(' ');
         std::cout << std::setw(labelWidth) << std::left << "Block Swapped: ";
         PrintResults(outputString);
+
+        // Print keyContent
+        std::cout << std::setfill(' ');
+        std::cout << std::setw(labelWidth) << std::left << "keyContent: ";
+        PrintResults(keyContent);
 
         // XOR strings together and trim as needed
         outputString = XOR(outputString, keyContent);
