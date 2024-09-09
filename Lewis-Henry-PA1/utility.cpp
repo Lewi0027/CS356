@@ -7,6 +7,7 @@
 #include <string>
 
 // MASTER
+
 void StartCipher(int argumentCount, const std::string& cipherType, const std::string& inputFile, const std::string& outputFileAddress, const std::string& keyFile, const std::string& operationMode) {
     // Validate parameters
     ValidateAll(argumentCount, cipherType, inputFile, outputFileAddress, keyFile, operationMode);
@@ -15,14 +16,19 @@ void StartCipher(int argumentCount, const std::string& cipherType, const std::st
     if (cipherType == "S") Stream(inputFile, outputFileAddress, keyFile);
     else Block(inputFile, outputFileAddress, keyFile, operationMode);
 }
+// Gracefully end sequence if input is blank
+void EndSequence(const std::string& outputFileLocation) {
+    CreateOutputFile(outputFileLocation);
+    exit(0);
+}
 
 // VALIDATORS
 // Validate all
 void ValidateAll(const int argumentCount, const std::string& cipherType, const std::string& inputFilePath, const std::string& outputFilePath, const std::string& keyFilePath, const std::string& operationMode) {
+    ValidateFileExists(inputFilePath, outputFilePath, false);
     ValidateArgumentCount(argumentCount);
     ValidateCipherType(cipherType);
-    ValidateFileExists(inputFilePath, false);
-    ValidateFileExists(keyFilePath, true);
+    ValidateFileExists(keyFilePath, outputFilePath, true);
     ValidateModeOfOperation(operationMode);
 }
 // Checks for five arguments
@@ -47,12 +53,21 @@ void ValidateModeOfOperation(const std::string& operationMode) {
     }
 }
 // Checks that a file exists at provided location
-void ValidateFileExists(const std::string& filePath, bool isKey) {
+void ValidateFileExists(const std::string& filePath, const std::string& outputPath, bool isKey) {
     std::ifstream file(filePath);
     if (!file) {
         std::cerr << (isKey ? "Key File Does Not Exist\n" :  "Input File Does Not Exist\n");
         std::exit(1);
     }
+    if (!isKey) ValidateFileContents(file, outputPath);
+}
+void ValidateFileContents(const std::ifstream& file, const std::string& outputPath) {
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string fileData = buffer.str();
+
+    // Check if the file is empty
+    if (fileData.empty()) EndSequence(outputPath);
 }
 
 // STRING & OUTPUT FUNCTIONS
@@ -62,8 +77,6 @@ std::string FileToString(const std::string& inputFilePath, bool isKey) {
     std::string content;
     
     content.assign((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
-
-    // std::cout << content << "\n";
 
     return content;
 }
@@ -79,16 +92,9 @@ std::string XOR(const std::string& input, const std::string& key) {
     size_t keySize = key.size();
     size_t inputSize = input.size();
 
-    // Debugging information
-    // std::cout << "returnString size: " << returnString.size() << std::endl;
-    // std::cout << "key size: " << keySize << std::endl;
-    // std::cout << "input size: " << inputSize << std::endl;
-
     for (unsigned int i = 0; i < inputSize; i++) {
         returnString[i] ^= key[i % keySize];
     }
-
-    // PrintResults(returnString);
 
     return returnString;
 }
@@ -100,6 +106,9 @@ void CreateOutputFile(const std::string& outputFileLocation, const std::string& 
         outputFile.write(output.c_str(), output.size());
         outputFile.close();
     }
+}
+void CreateOutputFile(const std::string& outputFileLocation) {
+    std::ofstream outputFile(outputFileLocation, std::ios::binary);
 }
 // Print result as hex
 void PrintResults(const std::string& returnString) {

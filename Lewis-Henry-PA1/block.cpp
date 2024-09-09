@@ -8,7 +8,6 @@ Block::Block(const std::string& inputFile, const std::string& outputFileLocation
     // Create strings out of input file and key file
     std::string inputContent = FileToString(inputFile, false);
     const std::string keyContent = FileToString(keyFile, true);
-    // std::cout << "initial key size: " << keyContent.size() << std::endl;
 
     if (operationMode == "E") {
         // Determine the fixed width for all labels
